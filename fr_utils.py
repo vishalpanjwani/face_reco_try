@@ -11,7 +11,8 @@ from keras.layers.normalization import BatchNormalization
 from keras.layers.pooling import MaxPooling2D, AveragePooling2D
 import h5py
 import matplotlib.pyplot as plt
-
+cascade_file_src = r"C:\Users\visha\Anaconda3\pkgs\opencv-3.3.1-py35h20b85fd_1\Library\etc\haarcascades\haarcascade_frontalface_default.xml"
+faceCascade = cv2.CascadeClassifier(cascade_file_src)
 
 _FLOATX = 'float32'
 
@@ -188,15 +189,29 @@ def load_dataset():
     
     return train_set_x_orig, train_set_y_orig, test_set_x_orig, test_set_y_orig, classes
 
+def pp_image(image_path)
+    image = cv2.imread(image_path,1)
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    faces = faceCascade.detectMultiScale(gray, 1.2, 5)
+    for (x, y, w, h) in faces:
+        cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
+    im = Image.open(image_path)
+    (x, y, w, h) = faces[0]
+    center_x = x+w/2
+    center_y = y+h/2
+    b_dim = min(max(w,h)*1.2,im.width, im.height)
+    box = (center_x-b_dim/2, center_y-b_dim/2, center_x+b_dim/2, center_y+b_dim/2)
+    crpim = im.crop(box).resize((96,96))
+    n=np.asarray(crpim)
+    
+    return n 
+
 def img_to_encoding(image_path, model):
-    img1 = cv2.imread(image_path, 1)
-    img = img1[...,::-1]
-    img = cv2.resize(img,(96,96))
-    img = np.asarray(img)
+    img=pp_image(image_path)
     img=img.astype(float)
     img = np.transpose(img, (2,0,1))
-    img=np.subtract(img,132)
-    img=np.divide(img,84)
+    img=np.subtract(img,123)
+    img=np.divide(img,86)
     x_train = np.array([img])
     embedding = model.predict_on_batch(x_train)
     return embedding

@@ -11,9 +11,6 @@ import fr_utils
 from keras.layers.core import Lambda, Flatten, Dense
 
 def inception_block_1a(X):
-    """
-    Implementation of an inception block
-    """
     
     X_3x3 = Conv2D(96, (1, 1), data_format='channels_first', name ='inception_3a_3x3_conv1')(X)
     X_3x3 = BatchNormalization(axis=1, epsilon=0.00001, name = 'inception_3a_3x3_bn1')(X_3x3)
@@ -210,15 +207,6 @@ def inception_block_3b(X):
     return inception
 
 def faceRecoModel(input_shape):
-    """
-    Implementation of the Inception model used for FaceNet
-    
-    Arguments:
-    input_shape -- shape of the images of the dataset
-
-    Returns:
-    model -- a Model() instance in Keras
-    """
         
     # Define the input as a tensor with shape input_shape
     X_input = Input(input_shape)
